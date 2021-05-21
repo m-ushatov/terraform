@@ -13,6 +13,15 @@ pipeline{
                 git 'https://github.com/m-ushatov/terraform'
             }
         }
+        stage('AWS Configure'){
+            steps{
+                sh '''
+                    aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+                    aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+                    aws configure set default.region us-east-2
+                '''
+            }
+        }
         stage('Terraform Init'){
             steps{
                 sh 'terraform init'
@@ -20,7 +29,7 @@ pipeline{
         }
         stage('Terraform Apply'){
             steps{
-                sh 'export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} && export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} && terraform apply --auto-approve'
+                sh 'terraform apply --auto-approve'
             }
         }
     }
